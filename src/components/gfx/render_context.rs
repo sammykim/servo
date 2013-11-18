@@ -125,8 +125,6 @@ impl<'self> RenderContext<'self>  {
             //FIXME(sammykim): Five more styles should be implemented.
             //double, groove, ridge, inset, outset
         }
-
-	
     }
 
     fn draw_dashed_border_segment(&self, direction: Direction, bounds: &Rect<Au>, border: SideOffsets2D<f32>, color: Color) {
@@ -139,10 +137,6 @@ impl<'self> RenderContext<'self>  {
 
 	stroke_opts.set_cap_style(AZ_CAP_BUTT as u8);
 	
-	fn test(){
-
-	}
-
         match direction {
             Top => {
 		let border_width = border.top;
@@ -236,48 +230,6 @@ impl<'self> RenderContext<'self>  {
 
         let path = path_builder.finish();
         self.draw_target.fill(&path, &ColorPattern(color), &draw_opts);	
-    }
-
-    fn apply_border_style(style: border_style::T, border_width: AzFloat, dash: &mut [AzFloat], stroke_opts: &mut StrokeOptions){
-        match style{
-            border_style::none => {
-            }
-            border_style::hidden => {
-            }
-            //FIXME(sammykim): This doesn't work with dash_pattern and cap_style well. I referred firefox code.
-            border_style::dotted => {
-                stroke_opts.line_width = border_width;
-                
-                if border_width > 2.0 {
-                    dash[0] = 0 as AzFloat;
-                    dash[1] = border_width * 2.0;
-
-                    stroke_opts.set_cap_style(AZ_CAP_ROUND as u8);
-                } else {
-                    dash[0] = border_width;
-                    dash[1] = border_width;
-                }
-                stroke_opts.mDashPattern = vec::raw::to_ptr(dash);
-                stroke_opts.mDashLength = dash.len() as size_t;
-            }
-            border_style::dashed => {
-                stroke_opts.set_cap_style(AZ_CAP_BUTT as u8);
-                stroke_opts.line_width = border_width;
-                dash[0] = border_width*3 as AzFloat;
-                dash[1] = border_width*3 as AzFloat;
-                stroke_opts.mDashPattern = vec::raw::to_ptr(dash);
-                stroke_opts.mDashLength = dash.len() as size_t;
-            }
-            //FIXME(sammykim): BorderStyleSolid doesn't show proper join-style with comparing firefox.
-            border_style::solid => {
-                stroke_opts.set_cap_style(AZ_CAP_BUTT as u8);
-                stroke_opts.set_join_style(AZ_JOIN_BEVEL as u8);
-                stroke_opts.line_width = border_width; 
-                stroke_opts.mDashLength = 0 as size_t;
-            }            
-            //FIXME(sammykim): Five more styles should be implemented.
-            //double, groove, ridge, inset, outset
-        }
     }
 }
 
