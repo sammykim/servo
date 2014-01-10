@@ -16,7 +16,7 @@ use dom::document::AbstractDocument;
 use dom::node::{AbstractNode, ElementNodeTypeId, Node, NodeIterator};
 use dom::document;
 use dom::namespace;
-use dom::namespace::{Namespace, Null};
+use dom::namespace::{Namespace, HTML, Null};
 use dom::htmlserializer::serialize;
 use layout_interface::{ContentBoxQuery, ContentBoxResponse, ContentBoxesQuery};
 use layout_interface::{ContentBoxesResponse, ContentChangedDocumentDamage};
@@ -131,6 +131,17 @@ impl Element {
             node: Node::new_inherited(ElementNodeTypeId(type_id), document),
             tag_name: tag_name,
             namespace: namespace,
+            attrs: ~[],
+            attr_list: None,
+            style_attribute: None,
+        }
+    }
+
+    pub fn new_layout_pseudo(tag_name: ~str) -> Element {
+        Element {
+            node: Node::new_without_doc(ElementNodeTypeId(HTMLUnknownElementTypeId)),
+            tag_name: tag_name,
+            namespace: HTML,
             attrs: ~[],
             attr_list: None,
             style_attribute: None,
