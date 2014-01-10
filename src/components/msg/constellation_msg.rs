@@ -8,6 +8,7 @@
 use extra::url::Url;
 use geom::rect::Rect;
 use geom::size::Size2D;
+use geom::point::Point2D;
 use std::comm::{Chan, SharedChan};
 
 #[deriving(Clone)]
@@ -36,6 +37,7 @@ pub enum Msg {
     NavigateMsg(NavigationDirection),
     RendererReadyMsg(PipelineId),
     ResizedWindowMsg(Size2D<uint>),
+    HoverWindowMsg(Point2D<f64>),
 }
 
 /// Represents the two different ways to which a page can be navigated

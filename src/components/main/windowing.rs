@@ -7,6 +7,7 @@
 use geom::point::Point2D;
 use geom::size::Size2D;
 use servo_msg::compositor_msg::{ReadyState, RenderState};
+use servo_msg::constellation_msg::ConstellationChan;
 
 pub enum MouseWindowEvent {
     MouseWindowClickEvent(uint, Point2D<f32>),
@@ -53,7 +54,7 @@ pub trait ApplicationMethods {
 
 pub trait WindowMethods<A> {
     /// Creates a new window.
-    fn new(app: &A) -> @mut Self;
+    fn new(app: &A, ConstellationChan) -> @mut Self;
     /// Returns the size of the window.
     fn size(&self) -> Size2D<f32>;
     /// Presents the window to the screen (perhaps by page flipping).

@@ -106,7 +106,7 @@ impl IOCompositor {
                port: Port<Msg>,
                constellation_chan: ConstellationChan,
                profiler_chan: ProfilerChan) -> IOCompositor {
-        let window: @mut Window = WindowMethods::new(app);
+        let window: @mut Window = WindowMethods::new(app, constellation_chan.clone());
 
         // Create an initial layer tree.
         //

@@ -20,6 +20,7 @@ use geom::point::Point2D;
 use geom::size::Size2D;
 use servo_msg::compositor_msg::{IdleRenderState, RenderState, RenderingRenderState};
 use servo_msg::compositor_msg::{FinishedLoading, Blank, Loading, PerformingLayout, ReadyState};
+use servo_msg::constellation_msg::{ConstellationChan, HoverWindowMsg};
 
 use glfw;
 
@@ -64,7 +65,7 @@ pub struct Window {
 
 impl WindowMethods<Application> for Window {
     /// Creates a new window.
-    fn new(_: &Application) -> @mut Window {
+    fn new(_: &Application, constellation_chan: ConstellationChan) -> @mut Window {
         // Create the GLFW window.
         let glfw_window = glfw::Window::create(800, 600, "Servo", glfw::Windowed)
             .expect("Failed to create GLFW window");
@@ -100,6 +101,9 @@ impl WindowMethods<Application> for Window {
             if action == glfw::Press {
                 local_window().handle_key(key, mods)
             }
+        }
+        do window.glfw_window.set_cursor_pos_callback |_, xpos, ypos| {
+            constellation_chan.send(HoverWindowMsg(Point2D(xpos, ypos))); 
         }
         do window.glfw_window.set_mouse_button_callback |win, button, action, _mods| {
             let (x, y) = win.get_cursor_pos();

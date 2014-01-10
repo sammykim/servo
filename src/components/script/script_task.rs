@@ -76,6 +76,8 @@ pub enum ScriptMsg {
     ExitPipelineMsg(PipelineId),
     /// Notifies the script that a window associated with a particular pipeline should be closed.
     ExitWindowMsg(PipelineId),
+
+    HoverMsg(Point2D<f64>),
 }
 
 pub struct NewLayoutInfo {
@@ -557,6 +559,7 @@ impl ScriptTask {
                     return false
                 },
                 ResizeMsg(*) => fail!("should have handled ResizeMsg already"),
+                HoverMsg(point) => println!("script task point : {:?}", point),
             }
         }
 

@@ -7,10 +7,11 @@ use compositing::{CompositorChan, SetIds, SetLayerClipRect};
 use extra::url::Url;
 use geom::rect::Rect;
 use geom::size::Size2D;
+use geom::point::Point2D;
 use gfx::opts::Opts;
 use pipeline::{Pipeline, CompositionPipeline};
-use script::script_task::{ResizeMsg, ResizeInactiveMsg};
-use servo_msg::constellation_msg::{ConstellationChan, ExitMsg, FailureMsg, FrameRectMsg};
+use script::script_task::{ResizeMsg, HoverMsg, ResizeInactiveMsg};
+use servo_msg::constellation_msg::{ConstellationChan, ExitMsg, FailureMsg, FrameRectMsg, HoverWindowMsg};
 use servo_msg::constellation_msg::{IFrameSandboxState, IFrameUnsandboxed, InitLoadUrlMsg};
 use servo_msg::constellation_msg::{LoadIframeUrlMsg, LoadUrlMsg, Msg, NavigateMsg, NavigationType};
 use servo_msg::constellation_msg::{PipelineId, RendererReadyMsg, ResizedWindowMsg, SubpageId};
@@ -364,6 +365,9 @@ impl Constellation {
             ResizedWindowMsg(new_size) => {
                 debug!("constellation got window resize message");
                 self.handle_resized_window_msg(new_size);
+            }
+            HoverWindowMsg(point) => {
+                self.handle_hover_msg(point);                
             }
         }
         true
@@ -738,7 +742,13 @@ impl Constellation {
             self.grant_paint_permission(next_frame_tree, frame_change.navigation_type);
         }
     }
-
+    
+    fn handle_hover_msg(&self, point: Point2D<f64>) {
+        for &@FrameTree { pipeline: pipeline, _ } in self.current_frame().iter() {
+            debug!("constellation sending hover point to script task");
+            pipeline.script_chan.send(HoverMsg(point));
+        }
+    }
     /// Called when the window is resized.
     fn handle_resized_window_msg(&mut self, new_size: Size2D<uint>) {
         let mut already_seen = HashSet::new();
